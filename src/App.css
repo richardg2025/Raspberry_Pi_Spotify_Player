@@ -106,10 +106,6 @@ button:active {
   background-color: #2870bd;
 }
 
-.alert-danger {
-  margin-top: 20px;
-}
-
 .InputGroup, .form-select, .form-control, .btn {
   margin-bottom: 15px;
   margin-left: 5px;
