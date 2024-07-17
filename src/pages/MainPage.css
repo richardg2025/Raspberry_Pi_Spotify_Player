@@ -1,0 +1,124 @@
+.App {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 15px;
+}
+
+.result-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Center the cards horizontally */
+  width: 100%;
+
+}
+
+.result-card {
+  width: 100%;
+  max-width: 31.6%;
+  align-items: center;
+  border: none;
+  background: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  margin-top: 1%;
+  margin-bottom: 1%;
+  margin-left: auto;
+  margin-right: auto;
+
+
+}
+
+.result-card:hover {
+  transform: scale(1.07);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+  width: 100%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.card-body {
+  padding: 10px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: bold;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.alert-danger {
+  margin-top: 20px;
+  border-radius: 15px;
+}
+
+.pagination-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  text-align: center;
+
+}
+
+button {
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+  background-color: #1061b8;
+}
+
+button:active {
+  background-color: #0063cd;
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.short-select {
+  flex-grow: 0.01;
+  height: calc(1.5em + 0.75rem + 2px);
+  font-size: 20px;
+  padding-left: 14px;
+}
+
+.search-bar {
+  flex-grow: 1;
+  height: calc(1.5em + 0.75rem + 2px); 
+  font-size: 20px;
+}
+
+.btn-primary {
+  background-color: #5faffe;
+}
+
+.btn-primary:hover {
+  background-color: #2870bd;
+}
+
+.alert-danger {
+  margin-top: 20px;
+}
+
+.InputGroup, .form-select, .form-control, .btn {
+  margin-bottom: 15px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.row-cols-1 > .col,
+.row-cols-md-2 > .col,
+.row-cols-lg-3 > .col {
+  display: flex;
+  justify-content: center;
+}
