@@ -11,8 +11,6 @@ const CLIENT_SECRET = "43c60a89e5524fb89e96a3acbff5502a";
 
 
 const App = () => {
-
-
     function App() {
         const [searchInput, setSearchInput] = useState("");
         const [accessToken, setAccessToken] = useState("");
@@ -251,9 +249,6 @@ const App = () => {
     }
 
 
-
-
-
     return (
         <Router>
             <Routes>
@@ -263,7 +258,6 @@ const App = () => {
         </Router>
     );
 };
-
 
 
 export default App;
