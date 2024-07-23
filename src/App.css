@@ -11,9 +11,8 @@
 .result-cards-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Center the cards horizontally */
+  justify-content: center;
   width: 100%;
-
 }
 
 .result-card {
@@ -26,13 +25,12 @@
   border-radius: 15px;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 
   margin-top: 1%;
   margin-bottom: 1%;
   margin-left: auto;
   margin-right: auto;
-
-
 }
 
 .result-card:hover {
@@ -67,9 +65,7 @@
   justify-content: center;
   margin-top: 20px;
   margin-bottom: 20px;
-
   text-align: center;
-
 }
 
 button {
@@ -94,7 +90,7 @@ button:active {
 
 .search-bar {
   flex-grow: 1;
-  height: calc(1.5em + 0.75rem + 2px); 
+  height: calc(1.5em + 0.75rem + 2px);
   font-size: 20px;
 }
 
