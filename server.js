@@ -1,26 +1,24 @@
+// server.js
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
-const cors = require('cors');  // Import cors
+const cors = require('cors');
 
 const app = express();
 const PORT = 5000;
 
 app.use(bodyParser.json());
-app.use(cors());  // Use cors middleware
+app.use(cors());
 
 app.post('/assign', (req, res) => {
     const filePath = path.join(__dirname, 'AssignedTags.json');
-    
-    // Extract the uri from the request body
-    const { uri } = req.body;
+    const { id, uri } = req.body;
 
-    if (!uri) {
-        return res.status(400).send('URI is required.');
+    if (!id || !uri) {
+        return res.status(400).send('RFID ID and URI are required.');
     }
 
-    // Read the current contents of the file
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading file:', err);
@@ -35,10 +33,8 @@ app.post('/assign', (req, res) => {
             console.error('Error parsing JSON:', parseError);
         }
 
-        // Add the new uri to the array
-        jsonData.push({ uri });
+        jsonData.push({ [id]: uri });
 
-        // Write the updated data back to the file
         fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', writeErr => {
             if (writeErr) {
                 console.error('Error writing file:', writeErr);

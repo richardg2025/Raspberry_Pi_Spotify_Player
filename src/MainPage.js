@@ -1,26 +1,25 @@
-import React, { useEffect } from 'react';
+// MainPage.js
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
-const LaunchPage = () => {
+const MainPage = () => {
     const navigate = useNavigate();
+    const [rfidId, setRfidId] = useState("");
 
     useEffect(() => {
         const socket = io('http://localhost:5000');
 
         socket.on('rfid_scan', (data) => {
             console.log('RFID scanned:', data);
-            navigate('/app'); // Redirect to the /app URL
+            setRfidId(data.id);
+            navigate('/app', { state: { rfidId: data.id } });
         });
 
         return () => {
             socket.disconnect();
         };
     }, [navigate]);
-
-    const handleRedirect = () => {
-        window.location.href = '/app'; // Redirect to the /app URL
-    };
 
     return (
         <div>
@@ -30,4 +29,4 @@ const LaunchPage = () => {
     );
 };
 
-export default LaunchPage; 
+export default MainPage;

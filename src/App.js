@@ -1,13 +1,17 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import { Container, InputGroup, FormControl, Row, Card, Button, Alert } from 'react-bootstrap';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import MainPage from './MainPage';
 
 const CLIENT_ID = "eb2882904717400b8c951b7d4f460f34";
 const CLIENT_SECRET = "43c60a89e5524fb89e96a3acbff5502a";
 
 const App = () => {
+    const location = useLocation();
+    const rfidId = location.state?.rfidId || "";
+
     const [searchInput, setSearchInput] = useState("");
     const [accessToken, setAccessToken] = useState("");
     const [playlists, setPlaylists] = useState([]);
@@ -178,7 +182,7 @@ const App = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ uri: item.uri })
+                body: JSON.stringify({ id: rfidId, uri: item.uri })
             });
 
             if (response.ok) {
