@@ -1,0 +1,24 @@
+import json
+import RPi.GPIO as GPIO
+from mfrc522 import SimpleMFRC522
+
+reader = SimpleMFRC522()
+
+try:
+    print("Waiting for scan")
+    id = reader.read()[0]
+    print("The ID for the scanned card is: ", id)
+        
+finally:
+    GPIO.cleanup()
+
+
+input = "INSERT_SPOTIFY_LINK"
+
+with open("AssignedTags.json", "w") as file:
+    data = json.load(file)
+
+    data[id] = input
+    json.dump(data, file, indent=4)
+
+print("Tag has been assigned!")

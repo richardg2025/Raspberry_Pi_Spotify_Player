@@ -1,0 +1,19 @@
+import json
+
+# read
+with open("AssignedTags.json", "r") as file:
+    data = json.load(file)
+
+    key = "656"
+    print(data.get(key))
+        
+    print(data)
+
+# write: if tag exists, it updates, if tag doesn't exist, it appends
+with open("AssignedTags.json", "w") as file:
+    data["656"] = "1"
+    json.dump(data, file, indent=4)
+
+    print(data)
+
+

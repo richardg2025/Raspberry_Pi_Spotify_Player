@@ -13,6 +13,13 @@ app.use(cors());  // Use cors middleware
 app.post('/assign', (req, res) => {
     const filePath = path.join(__dirname, 'AssignedTags.json');
     
+    // Extract the uri from the request body
+    const { uri } = req.body;
+
+    if (!uri) {
+        return res.status(400).send('URI is required.');
+    }
+
     // Read the current contents of the file
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
@@ -28,8 +35,8 @@ app.post('/assign', (req, res) => {
             console.error('Error parsing JSON:', parseError);
         }
 
-        // Add the new item to the array
-        jsonData.push('success');
+        // Add the new uri to the array
+        jsonData.push({ uri });
 
         // Write the updated data back to the file
         fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', writeErr => {

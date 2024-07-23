@@ -1,0 +1,43 @@
+from mfrc522 import SimpleMFRC522
+import RPi.GPIO as GPIO
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from time import sleep
+import json
+
+DEVICE_ID="YOUR_DEVICE_ID"
+CLIENT_ID="YOUR_CLIENT_ID"
+CLIENT_SECRET="YOUR_CLIENT_SECRET"
+
+while True:
+    try:
+        reader = SimpleMFRC522()
+        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+                                                       client_secret=CLIENT_SECRET,
+                                                       redirect_uri="http://localhost:8080",
+                                                       scope="user-read-playback-state,user-modify-playback-state"))
+
+        while True:
+            print("Waiting for scan")
+            id = reader.read()[0]
+            
+            sp.transfer_playback(device_id=DEVICE_ID, force_play=False)
+
+            with open("AssignedTags.json", "r") as file:
+                data = json.load(file)
+
+                if id not in data:
+                    raise ValueError("ID not recognized!")
+                else:
+                    uris = data.get(id)
+                    sp.start_playback(device_id=DEVICE_ID, uris=[uris])
+                    sleep(2)
+
+    # reruns code if error occurs, prevents software/hardware crashing
+    except Exception as e:
+        print(e)
+        pass
+
+    finally:
+        print("Cleaning  up...")
+        GPIO.cleanup()
