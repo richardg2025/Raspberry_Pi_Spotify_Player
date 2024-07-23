@@ -218,11 +218,10 @@ const App = () => {
                     imgSrc = item.album.images[0]?.url;
                 }
                 return (
-                    <Card key={i} className="result-card">
+                    <Card key={i} className="result-card" onClick={() => handleAssign(item)}>
                         <Card.Img variant="top" src={imgSrc} />
                         <Card.Body>
                             <Card.Title>{item.name}</Card.Title>
-                            <Button variant="primary" onClick={() => handleAssign(item)}>Assign</Button>
                         </Card.Body>
                     </Card>
                 );
