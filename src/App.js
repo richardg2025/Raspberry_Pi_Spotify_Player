@@ -3,7 +3,7 @@ import { Container, InputGroup, FormControl, Row, Card, Button, Alert } from 're
 import './App.css';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LaunchPage from './LaunchPage';
+import MainPage from './MainPage';
 
 
 const CLIENT_ID = "eb2882904717400b8c951b7d4f460f34";
@@ -175,6 +175,27 @@ const App = () => {
             }
         };
     
+        const handleAssign = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/assign', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: 'success' })
+                });
+        
+                if (response.ok) {
+                    console.log('Assignment successful');
+                } else {
+                    console.log('Assignment failed');
+                }
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        };
+
+
         const renderCards = () => {
             let items = [];
             if (para === "albums") {
@@ -184,11 +205,11 @@ const App = () => {
             } else if (para === "playlists") {
                 items = playlists;
             }
-    
+        
             if (items.length === 0) {
                 return null;
             }
-    
+        
             return items.map((item, i) => {
                 let imgSrc;
                 if (para === "albums" || para === "playlists") {
@@ -201,6 +222,7 @@ const App = () => {
                         <Card.Img variant="top" src={imgSrc} />
                         <Card.Body>
                             <Card.Title>{item.name}</Card.Title>
+                            <Button variant="primary" onClick={() => handleAssign(item)}>Assign</Button>
                         </Card.Body>
                     </Card>
                 );
@@ -252,7 +274,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<LaunchPage />} />
+                <Route path="/" element={<MainPage />} />
                 <Route path="/app" element={<App />} />
             </Routes>
         </Router>
