@@ -1,21 +1,75 @@
 from mfrc522 import SimpleMFRC522
 import RPi.GPIO as GPIO
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+import requests
+import urllib.parse
 from time import sleep
 import json
 
-DEVICE_ID = "YOUR_DEVICE_ID"
-CLIENT_ID = "YOUR_CLIENT_ID"
-CLIENT_SECRET = "YOUR_CLIENT_SECRET"
+CLIENT_ID = 'eb2882904717400b8c951b7d4f460f34'
+CLIENT_SECRET = '43c60a89e5524fb89e96a3acbff5502a'
+REDIRECT_URI = 'http://localhost:8080'
+
+# Step 1: Get Authorization Code
+def get_authorization_code():
+    scopes = 'user-read-playback-state user-modify-playback-state'
+    auth_url = 'https://accounts.spotify.com/authorize'
+    auth_params = {
+        'client_id': CLIENT_ID,
+        'response_type': 'code',
+        'redirect_uri': REDIRECT_URI,
+        'scope': scopes
+    }
+    auth_request_url = f"{auth_url}?{urllib.parse.urlencode(auth_params)}"
+    print(f"Go to the following URL to authorize the application: {auth_request_url}")
+
+# Step 2: Exchange Authorization Code for Access Token
+def get_access_token(auth_code):
+    token_url = 'https://accounts.spotify.com/api/token'
+    token_data = {
+        'grant_type': 'authorization_code',
+        'code': auth_code,
+        'redirect_uri': REDIRECT_URI,
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET
+    }
+    response = requests.post(token_url, data=token_data)
+    response_data = response.json()
+    return response_data.get('access_token')
+
+# Step 3: Get Available Devices
+def get_available_devices(access_token):
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+    response = requests.get('https://api.spotify.com/v1/me/player/devices', headers=headers)
+    response_data = response.json()
+    devices = response_data.get('devices', [])
+    if devices:
+        return devices[0]['id']  # Return the ID of the first available device
+    else:
+        raise Exception("No available devices found.")
 
 try:
+    # Step 1: Print the authorization URL
+    get_authorization_code()
+    
+    # Step 2: After the user authorizes the app, they will be redirected to your redirect URI with a code parameter
+    # You need to manually extract this code from the URL and use it here
+    auth_code = input("Enter the authorization code from the URL: ")
+    
+    # Step 3: Exchange the authorization code for an access token
+    access_token = get_access_token(auth_code)
+    
+    if not access_token:
+        raise Exception("Failed to obtain access token.")
+    
+    # Step 4: Get the available devices and set DEVICE_ID
+    DEVICE_ID = get_available_devices(access_token)
+    print(f"Using Device ID: {DEVICE_ID}")
+    
     # Initialize the RFID reader and Spotify client
     reader = SimpleMFRC522()
-    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
-                                                   client_secret=CLIENT_SECRET,
-                                                   redirect_uri="http://localhost:8080",
-                                                   scope="user-read-playback-state,user-modify-playback-state"))
+    sp = spotipy.Spotify(auth=access_token)
 
     while True:
         try:
