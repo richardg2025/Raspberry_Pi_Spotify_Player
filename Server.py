@@ -4,6 +4,7 @@ from flask_socketio import SocketIO
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import threading
+import atexit
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -16,6 +17,8 @@ def scan_rfid():
             id = reader.read()[0]
             print("The ID for the scanned card is: ", id)
             socketio.emit('rfid_scan', {'id': id})
+    except Exception as e:
+        print(f"Error during RFID scan: {e}")
     finally:
         GPIO.cleanup()
 
@@ -23,6 +26,11 @@ def scan_rfid():
 def index():
     return "RFID Scanner Running"
 
+def cleanup():
+    GPIO.cleanup()
+
 if __name__ == '__main__':
-    threading.Thread(target=scan_rfid).start()
+    # Ensure GPIO cleanup on exit
+    atexit.register(cleanup)
+    threading.Thread(target=scan_rfid, daemon=True).start()
     socketio.run(app, host='0.0.0.0', port=5000)
