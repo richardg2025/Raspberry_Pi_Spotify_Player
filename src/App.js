@@ -177,7 +177,7 @@ const App = () => {
 
     const handleAssign = async (item) => {
         try {
-            const response = await fetch('http://localhost:5000/assign', {
+            const response = await fetch('http://localhost:4000/assign', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
