@@ -25,14 +25,14 @@ app.post('/assign', (req, res) => {
             return res.status(500).send('Server error');
         }
 
-        let assignedTags = [];
+        let assignedTags = {};
         try {
             assignedTags = JSON.parse(data);
         } catch (parseError) {
             console.error('Error parsing JSON:', parseError);
         }
 
-        assignedTags.push({ id, uri });
+        assignedTags[id] = uri;
 
         fs.writeFile(FILE_PATH, JSON.stringify(assignedTags, null, 2), (writeErr) => {
             if (writeErr) {
