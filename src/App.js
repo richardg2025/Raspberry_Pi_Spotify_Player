@@ -1,17 +1,15 @@
 // App.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, InputGroup, FormControl, Row, Card, Button, Alert } from 'react-bootstrap';
-import './App.css';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import MainPage from './MainPage';
 
-// Use environment variables for sensitive information
 const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
 
 const App = () => {
     const location = useLocation();
-    const rfidId = location.state?.rfidId || "";
+    const rfidId = location.state?.rfidId || ""; // Ensure this is correctly set
 
     const [searchInput, setSearchInput] = useState("");
     const [accessToken, setAccessToken] = useState("");
@@ -178,7 +176,13 @@ const App = () => {
     };
 
     const handleAssign = async (item) => {
+        if (!rfidId) {
+            console.error('RFID ID is missing');
+            return;
+        }
+
         try {
+            console.log('Assigning ID:', rfidId, 'URI:', item.uri);
             const response = await fetch('http://localhost:4000/assign', {
                 method: 'POST',
                 headers: {
