@@ -5,9 +5,14 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from time import sleep
 import json
+from dotenv import load_dotenv
+import os
 
-CLIENT_ID = "eb2882904717400b8c951b7d4f460f34"
-CLIENT_SECRET = "f034ff6408864b47840923cab4a317dc"
+# Load environment variables
+load_dotenv()
+
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 
 def load_assigned_tags():
     with open("AssignedTags.json", "r") as file:
@@ -29,12 +34,8 @@ def scan_rfid(sp, assigned_tags, device_id):
             print("Card Value is:", id)
             sp.transfer_playback(device_id=device_id)
 
-            # Check if the scanned ID is in the JSON data
-            uri = None
-            for tag in assigned_tags:
-                if str(id) in tag:
-                    uri = tag[str(id)]
-                    break
+            # Directly access the assigned_tags dictionary with the scanned ID
+            uri = assigned_tags.get(str(id))
 
             if uri:
                 if "track" in uri:

@@ -1,15 +1,17 @@
 // App.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, InputGroup, FormControl, Row, Card, Button, Alert } from 'react-bootstrap';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import MainPage from './MainPage';
+import PlayerPage from './PlayerPage';
 
-const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
-const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
 const App = () => {
     const location = useLocation();
-    const rfidId = location.state?.rfidId || ""; // Ensure this is correctly set
+    const navigate = useNavigate();
+    const rfidId = location.state?.rfidId || "";
 
     const [searchInput, setSearchInput] = useState("");
     const [accessToken, setAccessToken] = useState("");
@@ -235,6 +237,12 @@ const App = () => {
 
     return (
         <div className="App">
+            <Button variant="secondary" className="back-button" onClick={() => navigate('/')}>
+                Back
+            </Button>
+            <Button variant="secondary" className="player-button" onClick={() => navigate('/player')}>
+                Go to Player
+            </Button>
             <Container className="mt-5">
                 <InputGroup className="mb-3" size="lg">
                     <select id="select" className="form-select me-2 short-select" onChange={changeVar}>
@@ -257,11 +265,13 @@ const App = () => {
                 </InputGroup>
                 {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
             </Container>
+            
             <Container className="mt-4">
                 <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                     {renderCards()}
                 </Row>
             </Container>
+            
             <div className="pagination-buttons mt-3">
                 <Button variant="secondary" className="me-2" onClick={fetchPreviousPage} disabled={currentPage === 1}>
                     Previous Page
@@ -280,6 +290,7 @@ const MainApp = () => {
             <Routes>
                 <Route path="/" element={<MainPage />} />
                 <Route path="/app" element={<App />} />
+                <Route path="/player" element={<PlayerPage />} />
             </Routes>
         </Router>
     );

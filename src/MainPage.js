@@ -11,7 +11,7 @@ const MainPage = () => {
         const socket = io('http://localhost:5000');
 
         socket.on('rfid_scan', (data) => {
-            console.log('RFID scanned:', data);
+            console.log('Mini Vinyl scanned:', data);
             setRfidId(data.id);
             navigate('/app', { state: { rfidId: data.id } });
         });
@@ -22,9 +22,9 @@ const MainPage = () => {
     }, [navigate]);
 
     return (
-        <div>
-            <h1>Welcome to Your RFID Spotify Player</h1>
-            <p>Please scan your RFID card to continue.</p>
+        <div className="page-container MainPage">
+            <h1 className="page-title">Welcome to Your RFID Spotify Player</h1>
+            <p className="page-text">Please scan the Mini Vinyl you want to assign.</p>
         </div>
     );
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 const app = express();
 const PORT = 4000;
@@ -48,6 +49,17 @@ app.post('/assign', (req, res) => {
             console.log('Assignment successful');
             res.status(200).send('Assignment successful');
         });
+    });
+});
+
+app.post('/start-player', (req, res) => {
+    exec('python3 player.py', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing player.py: ${error}`);
+            return res.status(500).send('Failed to start player');
+        }
+        console.log(`Player Output: ${stdout}`);
+        res.status(200).send('Player started');
     });
 });
 
