@@ -20,16 +20,21 @@ app.post('/assign', (req, res) => {
     }
 
     fs.readFile(FILE_PATH, 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            return res.status(500).send('Server error');
-        }
-
         let assignedTags = {};
-        try {
-            assignedTags = JSON.parse(data);
-        } catch (parseError) {
-            console.error('Error parsing JSON:', parseError);
+        
+        if (err) {
+            if (err.code === 'ENOENT') {
+                console.log('File not found, creating new one.');
+            } else {
+                console.error('Error reading file:', err);
+                return res.status(500).send('Server error');
+            }
+        } else {
+            try {
+                assignedTags = JSON.parse(data);
+            } catch (parseError) {
+                console.error('Error parsing JSON:', parseError);
+            }
         }
 
         assignedTags[id] = uri;
