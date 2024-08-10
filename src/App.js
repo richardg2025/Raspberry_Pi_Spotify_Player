@@ -5,8 +5,8 @@ import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from
 import MainPage from './MainPage';
 import PlayerPage from './PlayerPage';
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
+const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
 
 const App = () => {
     const location = useLocation();
