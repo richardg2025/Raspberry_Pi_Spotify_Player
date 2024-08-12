@@ -2,12 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
+import axios from 'axios';
 
 const MainPage = () => {
     const navigate = useNavigate();
     const [rfidId, setRfidId] = useState("");
 
     useEffect(() => {
+        // Start server.py when MainPage is loaded
+        axios.post('http://localhost:4000/start-server')
+            .then(response => console.log(response.data))
+            .catch(error => console.error('Error starting server:', error));
+
         const socket = io('http://localhost:5000');
 
         socket.on('rfid_scan', (data) => {
@@ -17,6 +23,10 @@ const MainPage = () => {
         });
 
         return () => {
+            // Stop server.py when MainPage is unmounted
+            axios.post('http://localhost:4000/stop-server')
+                .then(response => console.log(response.data))
+                .catch(error => console.error('Error stopping server:', error));
             socket.disconnect();
         };
     }, [navigate]);

@@ -1,11 +1,16 @@
+// server.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { spawn, exec } = require('child_process');
+const path = require('path');
 const fs = require('fs');
-const { exec } = require('child_process');
 
 const app = express();
 const PORT = 4000;
+
+let playerProcess = null;
+let serverProcess = null;
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -52,17 +57,85 @@ app.post('/assign', (req, res) => {
     });
 });
 
-app.post('/start-player', (req, res) => {
-    exec('python3 player.py', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error executing player.py: ${error}`);
-            return res.status(500).send('Failed to start player');
-        }
-        console.log(`Player Output: ${stdout}`);
-        res.status(200).send('Player started');
+app.post('/start-server', (req, res) => {
+    if (serverProcess) {
+        return res.status(400).send('Server is already running');
+    }
+
+    serverProcess = spawn('python3', ['server.py']);
+
+    serverProcess.stdout.on('data', (data) => {
+        console.log(`Server stdout: ${data}`);
     });
+
+    serverProcess.stderr.on('data', (data) => {
+        console.error(`Server stderr: ${data}`);
+    });
+
+    serverProcess.on('close', (code) => {
+        console.log(`Server process exited with code ${code}`);
+        serverProcess = null;
+    });
+
+    res.status(200).send('Server started');
 });
 
+const axios = require('axios');
+
+app.post('/stop-server', async (req, res) => {
+    if (serverProcess) {
+        try {
+            await axios.get('http://localhost:5000/shutdown');
+            serverProcess.kill();
+            serverProcess = null;
+            res.status(200).send('Server stopped');
+        } catch (error) {
+            console.error('Error stopping server:', error);
+            res.status(500).send('Error stopping server');
+        }
+    } else {
+        res.status(400).send('Server is not running');
+    }
+});
+
+app.post('/start-player', (req, res) => {
+    if (playerProcess) {
+      return res.status(400).send('Player is already running');
+    }
+  
+    playerProcess = spawn('python3', ['player.py']);
+  
+    playerProcess.stdout.on('data', (data) => {
+      console.log(`Player stdout: ${data}`);
+    });
+  
+    playerProcess.stderr.on('data', (data) => {
+      console.error(`Player stderr: ${data}`);
+    });
+  
+    playerProcess.on('close', (code) => {
+      console.log(`Player process exited with code ${code}`);
+      playerProcess = null;
+    });
+  
+    res.status(200).send('Player started');
+  });
+  
+  app.post('/stop-player', async (req, res) => {
+    if (playerProcess) {
+      try {
+        playerProcess.kill('SIGTERM');
+        playerProcess = null;
+        res.status(200).send('Server exited');
+      } catch (error) {
+        console.error('Error exiting server:', error);
+        res.status(500).send('Error exiting server');
+      }
+    } else {
+      res.status(200).send('Server is already exited');
+    }
+  });
+
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server controller running on port ${PORT}`);
 });
