@@ -4,6 +4,8 @@ import { Container, InputGroup, FormControl, Row, Card, Button, Alert } from 're
 import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import MainPage from './MainPage';
 import PlayerPage from './PlayerPage';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
@@ -195,11 +197,14 @@ const App = () => {
 
             if (response.ok) {
                 console.log('Assignment successful');
+                toast.success('Assignment successful!');
             } else {
                 console.log('Assignment failed');
+                toast.error('Assignment failed!');
             }
         } catch (error) {
             console.log('Error:', error);
+            toast.error('Error:', error);
         }
     };
 
@@ -237,6 +242,7 @@ const App = () => {
 
     return (
         <div className="App">
+            <ToastContainer />
             <Button variant="secondary" className="back-button" onClick={() => navigate('/')}>
                 Back
             </Button>
