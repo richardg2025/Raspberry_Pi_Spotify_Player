@@ -207,7 +207,7 @@ const App = () => {
             toast.error('Error:', error);
         }
     };
-
+    // The below renderCards function is borrowed from Cooper Codes on YT, and is modified to display my extra types of media (songs and playlists)
     const renderCards = () => {
         let items = [];
         if (para === "albums") {
